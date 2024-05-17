@@ -1,0 +1,11 @@
+*.swp
+package-lock.json
+__pycache__
+.pytest_cache
+.venv
+.infra_venv
+.lambda_venv
+*.egg-info
+
+# vscode
+.vscode
