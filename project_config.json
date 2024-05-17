@@ -1,0 +1,128 @@
+{
+   "Local_Locations": {
+      "my_things": "../_MyThings",
+      "web_site": "../Cloud_IoT_DIT_website",
+      "web_site_depl": "../Cloud_IoT_DIT_website/build/web"
+      "lambda_deployments_folder": "./deploy_lambda",
+      "firmware_folder": "../Cloud_IoT_DIY_firmware"
+   },
+   "Cloud_Deployment_ENV": {
+      "depl_account": "<your AWS account here>",
+      "depl_region": "us-east-1",
+      "profile": "default"
+   },
+   "REQUIRED": {
+      "cloud": {
+         "description": "stack_name_root is used across project as a part of components names",
+         "stack_name_root": "IotDIY",
+         "_description": "Order of parameters defines what will be choice in boostrapping tool",
+         "hosted_zone_name": "<your hosted zone FQDN (with ending dot>",
+         "hosted_zone_id": "<your hosted zone id>"
+      },
+      "urls": {
+         "description": "Choose domain where project subdomain and subsubdomains will be created",
+         "domain": "<you base domain name (typically like hosted_zone_name but w/o ending dot>",
+         "project_subdomain": "iotdiy"
+      }
+   },
+   "OPTIONAL": {
+      "urls": {
+         "auth_subdomain": "auth",
+         "uiapi_subdomain": "uiapi",
+         "mtlsapi_subdomain": "devicesapi",
+         "project_fqdn": "{{ project_subdomain }}.{{ domain }}"
+      },
+      "cloud": {
+         "telemetry_ingest_rule_prefix": "TelemetryInjection",
+         "status_ingest_rule_prefix": "StatusInjection",
+         "saved_dashboards_key_prefix": "dashboards",
+         "tags": {
+            "project": "IoT_DIY",
+            "stage": "dev"
+         }
+      },
+      "auth": {
+         "user_pool_name": "maindiy",
+         "auth_resource_server_id": "{{ project_fqdn }}",
+         "mobile_app_scope": "mobileapp",
+         "web_app_scope": "webapp",
+         "desktop_app_scope": "desktopapp",
+         "auth_scopes": ["{{ project_subdomain }}", "{{ mobile_app_scope }}","{{ web_app_scope }}","{{ desktop_app_scope }}"],
+         "io_uri_scheme": "{{ project_subdomain }}",
+         "io_callback": "{{ project_subdomain }}://{{ project_fqdn }}/callback",
+         "web_callback": "https://{{ project_fqdn }}/callback.html",
+         "dev_web_callback": "http://localhost:63756/callback.html",
+         "auth_callback_urls": {
+            "web": "{{ web_callback }}",
+            "io": "{{ io_callback }}",
+            "dev_local": "{{ dev_web_callback }}"
+         },
+         "auth_logout_urls": {
+            "main": "https://{{ project_fqdn }}",
+            "dev_local": "http://localhost:63756"
+         },
+         "usergroup_demo": "demousers",
+         "usergroup_readonly": "readonly",
+         "usergroup_fullaccess": "fullaccess",
+         "user_groups": [
+            "{{ usergroup_demo }}", "{{ usergroup_readonly }}", "{{ usergroup_fullaccess }}"
+         ]
+      },
+      "mtls_api": {
+         "mtlsapi_truststoreprefix": "mtlstruststore",
+         "mtlsapi_truststore_name": "devcertificates.pem",
+         "mtls_updates_key_prefix": "updates"
+      },
+      "mqtt": {
+         "data_plane_name": "dt",
+         "status_plane_name": "sdt",
+         "control_plane_name": "cmd",
+         "mqtt_app_name": "diyiot",
+         "things_group_name": "diy"
+      },
+      "mqtt_topic": {
+         "description": "jinja templates are used to describe topics. Component names should follow parameter names above!",
+         "status_topic": "$aws/rules/{{ status_ingest_rule_prefix }}{{ mqtt_app_name }}/{{ status_plane_name }}/{{ mqtt_app_name }}/{{ building_id }}/{{ location_id }}/{{ things_group_name }}/{{ thing_type }}/{{ thing_name }}",
+         "telemetry_topic": "$aws/rules/{{ telemetry_ingest_rule_prefix }}{{ mqtt_app_name }}/{{ data_plane_name }}/{{ mqtt_app_name }}/{{ building_id }}/{{ location_id }}/{{ things_group_name }}/{{ thing_type }}/{{ thing_name }}",
+         "control_topic": "{{ control_plane_name }}/{{ mqtt_app_name }}/{{ building_id }}/{{ location_id }}/{{ things_group_name }}/{{ thing_type }}/{{ thing_name }}",
+         "broadcast_topic": "{{ control_plane_name }}/{{ mqtt_app_name }}"
+      },
+      "storage_keys": {
+         "description": "this defines the name of records in the storage. topic(n) notation means n-th element of topic name. telemetry key and histories kays are the same except timestamp!",
+         "status_key": "${topic(1)}/${topic(2)}/${topic(6)}/${topic(7)}/${parse_time('yyyy',timestamp())}/${parse_time('MM',timestamp())}/${parse_time('dd',timestamp())}/${timestamp()}",
+         "telemetry_key": "${topic(1)}/${topic(2)}/${topic(6)}/${topic(7)}/${parse_time('yyyy',timestamp())}/${parse_time('MM',timestamp())}/${parse_time('dd',timestamp())}/${timestamp()}",
+         "dashboard_key": "{{ saved_dashboards_key_prefix }}/{{ user_id }}/{{ dashboard_id }}",
+         "mtls_updates_key": "{{ mtls_updates_key_prefix }}/{{ device_id }}/{{ update_id }}"
+      },
+      "mqtt_payloads": {
+         "description": "mqtt payload will be extended with some data using field names",
+         "topic_field": "mqtt_topic",
+         "timestamp_field": "mqtt_timestamp"
+      },
+      "aws_iot_provisioning": {
+         "description": "jinja templates are used to describe iot parameters. Component names should follow parameter names above!",
+         "bootstrapcert_local_folder": "{{ my_things }}/bootstrap_certificates",
+         "iot_bootstrapping_role_name": "{{ mqtt_app_name }}_bootstrapping",
+         "iot_provisioning_template_name": "{{ things_group_name }}_template",
+         "iot_provisioning_role_name":  "{{ things_group_name }}_provisioning",
+         "iot_logging_role_name": "{{ things_group_name }}_logging",
+         "iot_default_thing_type": "generic",
+         "iot_prov_topic_certificates": "$aws/certificates/create/json",
+         "iot_prov_topic_certificates_accepted": "$aws/certificates/create/json/accepted",
+         "iot_prov_topic_certificates_rejected": "$aws/certificates/create/json/rejected",
+         "iot_prov_topic_provision": "$aws/provisioning-templates/{{ iot_provisioning_template_name }}/provision/json",
+         "iot_prov_topic_provision_accepted": "$aws/provisioning-templates/{{ iot_provisioning_template_name }}/provision/json/accepted",
+         "iot_prov_topic_provision_rejected": "$aws/provisioning-templates/{{ iot_provisioning_template_name }}/provision/json/rejected"
+      },
+      "firmware": {
+         "THING_CONFIG_ENDPOINT": "/submittedForm",
+         "tls_certstore": "cacrt_all.pem",
+         "description": "mqtt_url may be updated during bootstrap process with values collected during deployment",
+         "mqtt_url": "<your mqtt url (typically some subdomain in iot.us-east-1.amazonaws.com>",
+         "CONFIG_SESSION_REQUEST": "Request config over session",
+         "CONFIG_SESSION_CONFIRM": "Config session confirmed",
+         "CONFIG_SESSION_CLOSE": "Config session completed",
+         "CONFIG_SESSION_START_DATA": "Start data transmission"
+      }
+   }
+}
