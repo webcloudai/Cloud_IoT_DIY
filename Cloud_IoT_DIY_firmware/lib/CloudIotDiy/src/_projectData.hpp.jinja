@@ -1,0 +1,61 @@
+/*
+© 2022 Daniil Sokolov (daniil.sokolov@webcloudai.com)
+MIT License
+*/
+//* This file is auto-created with project bootstrapping tool bootstrap.py
+// NOTE that the file will be overwritten on every bootstrap.py/jinja_generate.py run
+#ifndef PROJECT_CONSTANTS
+#define PROJECT_CONSTANTS
+/***********************************/
+/*** PROJECT CONSTANTS ***/
+#define SERIAL_DEBUG
+#ifdef SERIAL_DEBUG
+#define DEBUGPRINTLN(message) Serial.println(message)
+#define DEBUGPRINT(message) Serial.print(message)
+#define SERIALBEGIN(baudrate) Serial.begin(baudrate)
+#else
+#define DEBUGPRINTLN(message) ;
+#define DEBUGPRINT(message) ;
+#define SERIALBEGIN(baudrate) Serial.begin(baudrate)
+#endif
+
+/***********************************/
+/* This constants MUST BE THE SAME */
+/*  in firmware and cloud backend  */
+
+// General project constants
+#define MQTT_URL "{{ mqtt_url }}"
+#define MTLS_API_URL "{{ mtlsapi_subdomain }}.{{ project_subdomain }}.{{ domain }}"     // THIS BETTER BE REPLACED WITH INFO FROM DEPLOYMENT!!!
+#define APP_ID "{{ mqtt_app_name }}"
+#define DATA_PLANE_ID "{{ data_plane_name }}"
+#define STATUS_PLANE_ID "{{ status_plane_name }}"
+#define CONTROL_PLANE_ID "{{ control_plane_name }}"
+#define THINGS_GROUP_NAME "{{ things_group_name }}"
+
+// Thing configuration constants
+#define THING_CONFIG_ENDPOINT "{{ THING_CONFIG_ENDPOINT }}"
+
+// Provisioning constants
+#define CERT_REQUEST_TOPIC "{{ iot_prov_topic_certificates }}"
+#define CERT_REQ_ACCEPTED_TOPIC "{{ iot_prov_topic_certificates_accepted }}"
+#define CERT_REQ_REJECTED_TOPIC "{{ iot_prov_topic_certificates_rejected }}"
+#define THING_PROV_TOPIC "{{ iot_prov_topic_provision }}"
+#define THING_PROV_ACCEPTED_TOPIC "{{ iot_prov_topic_provision_accepted }}"
+#define THING_PROV_REJECTED_TOPIC "{{ iot_prov_topic_provision_rejected }}"
+#define PROV_THING_TYPE "{{ iot_default_thing_type }}"
+
+// MQTT communication constants
+// remaining jinja syntax will be handled by firmware at runtime
+#define TELEMETRY_TOPIC "{{ telemetry_topic }}"
+#define STATUS_TOPIC "{{ status_topic }}"
+#define CONTROL_TOPIC "{{ control_topic }}"
+#define BROADCAST_TOPIC "{{ broadcast_topic }}"
+
+// SERIAL communication constants
+#define CONFIG_SESSION_REQUEST "{{ CONFIG_SESSION_REQUEST }}"
+#define CONFIG_SESSION_CONFIRM "{{ CONFIG_SESSION_CONFIRM }}"
+#define CONFIG_SESSION_CLOSE "{{ CONFIG_SESSION_CLOSE }}"
+#define CONFIG_SESSION_START_DATA "{{ CONFIG_SESSION_START_DATA }}"
+#define SERIAL_COMM_TIMEOUT_MS 3000 
+
+#endif
