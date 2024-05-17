@@ -1,8 +1,8 @@
 {
    "Local_Locations": {
       "my_things": "../_MyThings",
-      "web_site": "../Cloud_IoT_DIT_website",
-      "web_site_depl": "../Cloud_IoT_DIT_website/build/web"
+      "web_site": "../Cloud_IoT_DIY_ui/cloud_iot_diy",
+      "web_site_depl": "../Cloud_IoT_DIY_ui/cloud_iot_diy/build/web",
       "lambda_deployments_folder": "./deploy_lambda",
       "firmware_folder": "../Cloud_IoT_DIY_firmware"
    },
