@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<title>Authentication complete</title>
+<html>
+<body>
+  <p>Authentication is complete. If this does not happen automatically, please
+    close the window.</p>
+  <script>
+    window.onload = function() {
+      //const urlParams = new URLSearchParams(window.location.search);
+      //const code = urlParams.get('code');
+      //if(code) {
+        window.opener.postMessage(window.location.href, window.location.origin);
+      //}
+      window.close();
+    }
+  </script>
+</body>
+</html>
